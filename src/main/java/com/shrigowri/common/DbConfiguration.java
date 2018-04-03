@@ -1,4 +1,4 @@
-package com.sm.common;
+package com.shrigowri.common;
 
 import java.io.IOException;
 import java.io.InputStream;

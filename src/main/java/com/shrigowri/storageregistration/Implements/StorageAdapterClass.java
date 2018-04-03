@@ -1,4 +1,4 @@
-package com.sm.storageregistration.Implements;
+package com.shrigowri.storageregistration.Implements;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,8 +16,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.sm.common.AccessKey;
-import com.sm.dto.StorageAccessDTO;
+import com.shrigowri.common.AccessKey;
+import com.shrigowri.dto.StorageAccessDTO;
 
 public abstract class StorageAdapterClass{
 
@@ -29,22 +29,18 @@ public abstract class StorageAdapterClass{
 	static AWSCredentials credentials = null;
 
 	public StorageAdapterClass create(StorageAdapterClass entity) throws BindException, IllegalArgumentException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public StorageAdapterClass load(StorageAdapterClass entity) throws BindException, IllegalArgumentException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public StorageAdapterClass update(StorageAdapterClass entity) throws BindException, IllegalArgumentException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<StorageAdapterClass> findAll() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -57,7 +53,6 @@ public abstract class StorageAdapterClass{
 
 	public String add(StorageAccessDTO storageaccess) {
 		logger.debug("Inserting amazoneDTO : {} to aws S3 bucket.", storageaccess);
-		// TODO Auto-generated method stub
 		// String key = null;
 		// logger.debug("Inserted with : {}", (key != null) ? key : "FAILED");
 
@@ -107,7 +102,6 @@ public abstract class StorageAdapterClass{
 	}
 
 	public StorageAccessDTO get(String id) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

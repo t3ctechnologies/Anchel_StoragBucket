@@ -1,4 +1,4 @@
-package com.sm.storageregistration.Implements;
+package com.shrigowri.storageregistration.Implements;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -21,8 +21,8 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.sm.common.AccessKey;
-import com.sm.dto.StorageAccessDTO;
+import com.shrigowri.common.AccessKey;
+import com.shrigowri.dto.StorageAccessDTO;
 
 public class StorageAwsImpl extends StorageAdapterClass {
 
@@ -51,7 +51,6 @@ public class StorageAwsImpl extends StorageAdapterClass {
 					String filePath2 = filePath1.substring(filePath1.indexOf('_') + 1);
 					ac.insert(filePath2, key, insertedFileName);
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -154,7 +153,6 @@ public class StorageAwsImpl extends StorageAdapterClass {
 
 	@Override
 	public StorageAccessDTO sendFile(String filePath, String folderName, String key) throws FileNotFoundException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
