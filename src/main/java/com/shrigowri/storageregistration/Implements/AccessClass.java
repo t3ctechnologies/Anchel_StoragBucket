@@ -1,4 +1,4 @@
-package com.sm.storageregistration.Implements;
+package com.shrigowri.storageregistration.Implements;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.sm.common.DbConfiguration;
+import com.shrigowri.common.DbConfiguration;
 
 public class AccessClass {
 
