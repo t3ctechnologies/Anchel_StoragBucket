@@ -28,8 +28,8 @@ public class AccessClass {
 
 		try {
 			Connection conn = (Connection) DriverManager.getConnection(url, user, password);
-			String query = " insert into S3BUCKETMAPPING (fileName, specialKey, s3fileurl, processedOn)"
-					+ " values (?, ?, ?, ?)";
+			String query = " insert into S3BUCKETMAPPING (fileName, specialKey, s3fileurl, processedOn, isdeleted)"
+					+ " values (?, ?, ?, ?, ?)";
 
 			PreparedStatement preparedStmt = conn.prepareStatement(query);
 
@@ -37,6 +37,7 @@ public class AccessClass {
 			preparedStmt.setLong(2, specialKey);
 			preparedStmt.setString(3, s3url);
 			preparedStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+			preparedStmt.setBoolean(5, false);
 
 			preparedStmt.execute();
 
