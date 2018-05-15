@@ -1,9 +1,10 @@
-package com.shrigowri.storageregistration.Implements;
+package com.sm.storageregistration.Implements;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.BindException;
 import java.util.List;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.shrigowri.common.AccessKey;
-import com.shrigowri.dto.StorageAccessDTO;
+import com.sm.common.DbConfiguration;
+import com.sm.common.SMConstants;
+import com.sm.dto.StorageAccessDTO;
 
-public abstract class StorageAdapterClass{
+public abstract class StorageAdapterClass {
 
 	private static final Logger logger = LoggerFactory.getLogger(StorageAccessDTO.class);
 
@@ -28,19 +30,35 @@ public abstract class StorageAdapterClass{
 	static AmazonS3 s3client = null;
 	static AWSCredentials credentials = null;
 
+	String accesskey = null;
+	String secretkey = null;
+	String bucketName = null;
+	Properties properties = null;
+
+	public StorageAdapterClass() {
+		properties = new DbConfiguration().getDbProperties();
+		this.accesskey = properties.getProperty(SMConstants.ACCESS_KEY);
+		this.secretkey = properties.getProperty(SMConstants.SECRET_KEY);
+		this.bucketName = properties.getProperty(SMConstants.BUCKET_NAME);
+	}
+
 	public StorageAdapterClass create(StorageAdapterClass entity) throws BindException, IllegalArgumentException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public StorageAdapterClass load(StorageAdapterClass entity) throws BindException, IllegalArgumentException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public StorageAdapterClass update(StorageAdapterClass entity) throws BindException, IllegalArgumentException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public List<StorageAdapterClass> findAll() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -53,30 +71,25 @@ public abstract class StorageAdapterClass{
 
 	public String add(StorageAccessDTO storageaccess) {
 		logger.debug("Inserting amazoneDTO : {} to aws S3 bucket.", storageaccess);
-		// String key = null;
-		// logger.debug("Inserted with : {}", (key != null) ? key : "FAILED");
 
 		try {
-			// credentials = new BasicAWSCredentials(accessKey, secretKey)
-			credentials = new BasicAWSCredentials(AccessKey.getAccessKey(), AccessKey.getSecretKey());
+			credentials = new BasicAWSCredentials(this.accesskey, this.secretkey);
 			s3client = new AmazonS3Client(credentials);
-			// File file = new File(file);
+
 			File file = new File(storageaccess.getFile());
 
 			logger.debug("File Is Uploading Wait..... :" + storageaccess);
-			s3client.putObject(new PutObjectRequest(AccessKey.getBucketName(),
-					storageaccess.getFolder() + '/' + storageaccess.getKey(), file));
-	
-			fileName = ((AmazonS3Client) s3client).getResourceUrl(AccessKey.getBucketName(),
-					storageaccess.getFolder() + '/' + storageaccess.getKey());
+			logger.debug("File Name : " + file);
+			s3client.putObject(new PutObjectRequest(this.bucketName,
+					storageaccess.getFolder() + File.separator + storageaccess.getKey(), file));
+
+			fileName = ((AmazonS3Client) s3client).getResourceUrl(this.bucketName,
+					storageaccess.getFolder() + File.separator + storageaccess.getKey());
 
 			logger.debug("Folder Name :" + storageaccess.getFolder());
 			logger.debug("File Name :" + storageaccess.getKey());
 			logger.debug("Uploaded successfully..");
-		} catch (AmazonServiceException ase) // That represents an error
-												// response returned by an
-												// Amazon web service
-		{
+		} catch (AmazonServiceException ase) {
 			logger.debug("Caught an AmazonServiceException, which " + "means your request made it "
 					+ "to Amazon S3, but was rejected with an error response" + " for some reason.");
 			logger.debug("Error Message:    " + ase.getMessage());
@@ -84,41 +97,31 @@ public abstract class StorageAdapterClass{
 			logger.debug("AWS Error Code:   " + ase.getErrorCode());
 			logger.debug("Error Type:       " + ase.getErrorType());
 			logger.debug("Request ID:       " + ase.getRequestId());
-		} catch (AmazonClientException ace) /*
-											 * Errors that occur when unable to
-											 * get a response from a service, or
-											 * when the client is unable to
-											 * parse the response from a service
-											 */
-		{
+		} catch (AmazonClientException ace) {
 			logger.debug("Caught an AmazonClientException, which " + "means the client encountered "
 					+ "an internal error while trying to " + "communicate with S3, "
 					+ "such as not being able to access the network.");
 			logger.debug("Error Message: " + ace.getMessage());
 		}
-
 		return fileName;
 
 	}
 
 	public StorageAccessDTO get(String id) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	public boolean delete(StorageAccessDTO storageaccess) {
-		credentials = new BasicAWSCredentials(AccessKey.getAccessKey(), AccessKey.getSecretKey());
+		credentials = new BasicAWSCredentials(this.accesskey, this.secretkey);
 		s3client = new AmazonS3Client(credentials);
-		java.util.List<S3ObjectSummary> fileList = (List<S3ObjectSummary>) s3client
-				.listObjects(AccessKey.getBucketName(), storageaccess.getFolder());
+		java.util.List<S3ObjectSummary> fileList = (List<S3ObjectSummary>) s3client.listObjects(this.bucketName,
+				storageaccess.getFolder());
 		for (S3ObjectSummary file : fileList) {
 
-			s3client.deleteObject(AccessKey.getBucketName(), file.getKey());
+			s3client.deleteObject(this.bucketName, file.getKey());
 		}
-		/*
-		 * s3client.deleteObject(BUCKET_NAME, folderName); System.out.println(
-		 * "Deleted Sucessfully...");
-		 */
 		return false;
 	}
 

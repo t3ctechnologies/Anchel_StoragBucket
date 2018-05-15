@@ -1,4 +1,4 @@
-package com.shrigowri.common;
+package com.sm.common;
 
 public class AccessKey {
 	private static final String ACCESS_KEY = "";/*put your access key*/

@@ -1,4 +1,4 @@
-package com.shrigowri.storageregistration;
+package com.sm.storageregistration;
 
 import java.net.BindException;
 import java.util.List;

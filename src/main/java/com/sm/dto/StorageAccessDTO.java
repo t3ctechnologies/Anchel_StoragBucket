@@ -1,4 +1,4 @@
-package com.shrigowri.dto;
+package com.sm.dto;
 
 public class StorageAccessDTO {
 	private String file;

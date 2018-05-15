@@ -1,4 +1,4 @@
-package com.shrigowri.common;
+package com.sm.common;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ public class DbConfiguration {
 	public Properties getDbProperties() {
 		Properties properties = new Properties();
 		try {
-			InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("dbconfig.properties");
+			InputStream inputStream = DbConfiguration.class.getClassLoader().getResourceAsStream("./waarpdb.properties");
 			properties.load(inputStream);
 		} catch (IOException e) {
 			e.printStackTrace();

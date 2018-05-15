@@ -1,4 +1,4 @@
-package com.shrigowri.storageregistration.Implements;
+package com.sm.storageregistration.Implements;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +22,22 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.shrigowri.common.AccessKey;
-import com.shrigowri.dto.StorageAccessDTO;
+import com.sm.common.DbConfiguration;
+import com.sm.common.SMConstants;
+import com.sm.dto.StorageAccessDTO;
 
 public class StorageAwsImpl extends StorageAdapterClass {
 
-	// private final static String G_DEFAULT_BUCKET_NAME = "weapp-storage";
-	// private final static String G_DEFAULT_FOLDER_NAME = "in";
+	String accesskey = null;
+	String secretkey = null;
+	Properties properties = null;
+
+	public StorageAwsImpl() {
+		properties = new DbConfiguration().getDbProperties();
+		this.accesskey = properties.getProperty(SMConstants.ACCESS_KEY);
+		this.secretkey = properties.getProperty(SMConstants.SECRET_KEY);
+	}
+
 	private static final Logger logger = LoggerFactory.getLogger(StorageAwsImpl.class);
 
 	public StorageAccessDTO sendFile(String filePath, String folderName, Long key) {
@@ -36,7 +46,7 @@ public class StorageAwsImpl extends StorageAdapterClass {
 		StorageAccessDTO storagetypeDTO = null;
 
 		if (filePath != null) {
-			filePath = filePath.replaceAll("/", "\\");
+			// filePath = filePath.replaceAll("/", "\\");
 			storagetypeDTO = new StorageAccessDTO();
 			storagetypeDTO.setFile(filePath);
 			storagetypeDTO.setFolder(folderName);
@@ -45,12 +55,13 @@ public class StorageAwsImpl extends StorageAdapterClass {
 			String insertedFileName = new StorageAwsImpl().add(storagetypeDTO);
 			storagetypeDTO.setUrl(insertedFileName);
 			if (!((insertedFileName) == null)) {
-				AccessClass ac = new AccessClass();
+				AccessClass accessClass = new AccessClass();
 				try {
 					String filePath1 = filePath.substring(filePath.indexOf('_') + 1);
 					String filePath2 = filePath1.substring(filePath1.indexOf('_') + 1);
-					ac.insert(filePath2, key, insertedFileName);
+					accessClass.insert(filePath2, key, insertedFileName);
 				} catch (SQLException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -65,7 +76,7 @@ public class StorageAwsImpl extends StorageAdapterClass {
 	}
 
 	public void DeleteFile(String bucketName, String folderName) {
-		credentials = new BasicAWSCredentials(AccessKey.getAccessKey(), AccessKey.getSecretKey());
+		credentials = new BasicAWSCredentials(this.accesskey, this.secretkey);
 		s3client = new AmazonS3Client(credentials);
 		java.util.List<S3ObjectSummary> fileList = s3client.listObjects(bucketName, folderName).getObjectSummaries();
 		for (S3ObjectSummary file : fileList) {
@@ -77,7 +88,7 @@ public class StorageAwsImpl extends StorageAdapterClass {
 
 	@Override
 	public void GetAll(String bucketName, String folderName) {
-		credentials = new BasicAWSCredentials(AccessKey.getAccessKey(), AccessKey.getSecretKey());
+		credentials = new BasicAWSCredentials(this.accesskey, this.secretkey);
 		s3client = new AmazonS3Client(credentials);
 		logger.debug("Listing objects");
 		ObjectListing objectListing = s3client
@@ -106,7 +117,7 @@ public class StorageAwsImpl extends StorageAdapterClass {
 
 	public void GetById(String bucketName, String folderName, String key, String targetFile) {
 		logger.debug("getting object details for folderName :{}, key :{}", folderName, key);
-		credentials = new BasicAWSCredentials(AccessKey.getAccessKey(), AccessKey.getSecretKey());
+		credentials = new BasicAWSCredentials(this.accesskey, this.secretkey);
 		s3client = new AmazonS3Client(credentials);
 
 		S3Object s3object = s3client.getObject(new GetObjectRequest(bucketName, folderName + "/" + key));
@@ -153,6 +164,7 @@ public class StorageAwsImpl extends StorageAdapterClass {
 
 	@Override
 	public StorageAccessDTO sendFile(String filePath, String folderName, String key) throws FileNotFoundException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

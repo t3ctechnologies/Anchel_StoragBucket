@@ -1,13 +1,14 @@
-package com.shrigowri.storageregistration.Implements;
+package com.sm.storageregistration.Implements;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Properties;
 
-import com.shrigowri.common.DbConfiguration;
+import com.sm.common.DbConfiguration;
 
 public class AccessClass {
 
@@ -18,23 +19,24 @@ public class AccessClass {
 
 	public AccessClass() {
 		properties = new DbConfiguration().getDbProperties();
-		url = properties.getProperty("com.sftp.s3.url");
-		user = properties.getProperty("com.sftp.s3.username");
-		password = properties.getProperty("com.sftp.s3.password");
+		url = properties.getProperty("com.sgs.waarpdb.server");
+		user = properties.getProperty("com.sgs.waarpdb.user");
+		password = properties.getProperty("com.sgs.waarpdb.pass");
 	}
 
 	public void insert(String fileName, long specialKey, String s3url) throws SQLException {
 
 		try {
 			Connection conn = (Connection) DriverManager.getConnection(url, user, password);
-			String query = " insert into sftpstoragebucketmapping (fileName, specialKey, s3fileurl)"
-					+ " values (?, ?, ?)";
+			String query = " insert into S3BUCKETMAPPING (fileName, specialKey, s3fileurl, processedOn)"
+					+ " values (?, ?, ?, ?)";
 
 			PreparedStatement preparedStmt = conn.prepareStatement(query);
 
 			preparedStmt.setString(1, fileName);
 			preparedStmt.setLong(2, specialKey);
 			preparedStmt.setString(3, s3url);
+			preparedStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
 
 			preparedStmt.execute();
 
@@ -51,7 +53,7 @@ public class AccessClass {
 		String splId = null;
 		try {
 			Connection conn = (Connection) DriverManager.getConnection(url, user, password);
-			String query = " select specialKey from sftpstoragebucketmapping where fileName =?";
+			String query = " select specialKey from S3BUCKETMAPPING where fileName =?";
 
 			PreparedStatement preparedStmt = conn.prepareStatement(query);
 
